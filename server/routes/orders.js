@@ -105,63 +105,129 @@ router.post('/', (req, res) => {
         
         const orderId = this.lastID;
         
-        // 주문 항목들 추가
+        // 재고 확인 및 차감
+        let stockCheckCount = 0;
+        let stockErrors = [];
         let completedItems = 0;
         let hasError = false;
         
+        // 1단계: 모든 메뉴의 재고 확인
         items.forEach(item => {
-          db.run(
-            `INSERT INTO order_items (order_id, menu_item_id, quantity, unit_price, subtotal) 
-             VALUES (?, ?, ?, ?, ?)`,
-            [orderId, item.id, item.quantity, item.price, (item.totalPrice || item.price) * item.quantity],
-            function(itemErr) {
-              if (itemErr && !hasError) {
-                hasError = true;
-                console.error('주문 항목 추가 오류:', itemErr);
+          db.get('SELECT stock FROM menu_items WHERE id = ?', [item.id], (stockErr, stockRow) => {
+            if (stockErr) {
+              hasError = true;
+              console.error('재고 확인 오류:', stockErr);
+              db.run('ROLLBACK');
+              return res.status(500).json({
+                success: false,
+                error: '재고 확인에 실패했습니다.'
+              });
+            }
+            
+            if (!stockRow) {
+              hasError = true;
+              db.run('ROLLBACK');
+              return res.status(404).json({
+                success: false,
+                error: `메뉴 ID ${item.id}를 찾을 수 없습니다.`
+              });
+            }
+            
+            if (stockRow.stock < item.quantity) {
+              stockErrors.push({
+                menuName: item.name,
+                requestedQuantity: item.quantity,
+                currentStock: stockRow.stock
+              });
+            }
+            
+            stockCheckCount++;
+            
+            // 모든 재고 확인 완료
+            if (stockCheckCount === items.length && !hasError) {
+              if (stockErrors.length > 0) {
                 db.run('ROLLBACK');
-                return res.status(500).json({
+                return res.status(400).json({
                   success: false,
-                  error: '주문 항목 추가에 실패했습니다.'
+                  error: '재고가 부족합니다.',
+                  details: stockErrors
                 });
               }
               
-              completedItems++;
-              
-              if (completedItems === items.length && !hasError) {
-                // 모든 항목이 성공적으로 추가됨
-                db.run('COMMIT');
-                
-                // 생성된 주문 정보 조회
-                db.get(
-                  `SELECT * FROM orders WHERE id = ?`,
-                  [orderId],
-                  (selectErr, order) => {
-                    if (selectErr) {
-                      console.error('주문 조회 오류:', selectErr);
+              // 2단계: 재고 차감 및 주문 항목 추가
+              items.forEach(item => {
+                // 재고 차감
+                db.run(
+                  'UPDATE menu_items SET stock = stock - ? WHERE id = ?',
+                  [item.quantity, item.id],
+                  (updateErr) => {
+                    if (updateErr && !hasError) {
+                      hasError = true;
+                      console.error('재고 차감 오류:', updateErr);
+                      db.run('ROLLBACK');
                       return res.status(500).json({
                         success: false,
-                        error: '주문은 생성되었지만 조회에 실패했습니다.'
+                        error: '재고 차감에 실패했습니다.'
+                      });
+                    }
+                  }
+                );
+                
+                // 주문 항목 추가
+                db.run(
+                  `INSERT INTO order_items (order_id, menu_item_id, quantity, unit_price, subtotal) 
+                   VALUES (?, ?, ?, ?, ?)`,
+                  [orderId, item.id, item.quantity, item.price, (item.totalPrice || item.price) * item.quantity],
+                  function(itemErr) {
+                    if (itemErr && !hasError) {
+                      hasError = true;
+                      console.error('주문 항목 추가 오류:', itemErr);
+                      db.run('ROLLBACK');
+                      return res.status(500).json({
+                        success: false,
+                        error: '주문 항목 추가에 실패했습니다.'
                       });
                     }
                     
-                    console.log(`새 주문 생성 완료: ID ${orderId}, 총액 ${total}원`);
+                    completedItems++;
                     
-                    res.status(201).json({
-                      success: true,
-                      message: '주문이 생성되었습니다.',
-                      data: {
-                        id: order.id,
-                        total: order.total_amount,
-                        status: order.status,
-                        createdAt: order.created_at,
-                        items: items
-                      }
-                    });
+                    if (completedItems === items.length && !hasError) {
+                      db.run('COMMIT');
+                      
+                      // 주문 완료 후 전체 주문 정보 조회
+                      db.get(
+                        `SELECT * FROM orders WHERE id = ?`,
+                        [orderId],
+                        (selectErr, order) => {
+                          if (selectErr) {
+                            console.error('주문 조회 오류:', selectErr);
+                            return res.status(500).json({
+                              success: false,
+                              error: '주문은 생성되었지만 조회에 실패했습니다.'
+                            });
+                          }
+                          
+                          console.log(`새 주문 생성 완료: ID ${orderId}, 총액 ${total}원`);
+                          
+                          res.status(201).json({
+                            success: true,
+                            message: '주문이 생성되었습니다.',
+                            data: {
+                              id: order.id,
+                              total: order.total_amount,
+                              status: order.status,
+                              createdAt: order.created_at,
+                              items: items
+                            }
+                          });
+                        }
+                      );
+                    }
                   }
                 );
-              }
+              });
             }
-          );
+          });
         });
       }
     );

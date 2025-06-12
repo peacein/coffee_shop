@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './AdminView.css'
+import { API_ENDPOINTS } from '../config/api'
 
 const AdminView = ({ orders, onUpdateOrderStatus }) => {
   const [filter, setFilter] = useState('all') // 'all', 'pending', 'preparing', 'completed'
@@ -11,7 +12,7 @@ const AdminView = ({ orders, onUpdateOrderStatus }) => {
   const fetchMenuStock = async () => {
     try {
       setLoading(true)
-      const response = await fetch('http://localhost:5000/api/menu?includeUnavailable=true')
+      const response = await fetch(`${API_ENDPOINTS.MENU}?includeUnavailable=true`)
       const data = await response.json()
       
       if (data.success) {
@@ -20,7 +21,7 @@ const AdminView = ({ orders, onUpdateOrderStatus }) => {
           id: item.id,
           name: item.name,
           stock: item.stock || 0,
-          maxStock: item.maxStock || 20,
+          maxStock: item.max_stock || 50,
           minStock: 5, // 최소 재고 기준
           soldOut: item.soldOut || false
         }))
@@ -79,7 +80,7 @@ const AdminView = ({ orders, onUpdateOrderStatus }) => {
   const updateStock = async (menuId, newStock) => {
     try {
       // 백엔드에 재고 업데이트 요청
-      const response = await fetch(`http://localhost:5000/api/menu/${menuId}/stock`, {
+      const response = await fetch(`${API_ENDPOINTS.MENU}/${menuId}/stock`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

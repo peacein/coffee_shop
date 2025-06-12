@@ -40,17 +40,19 @@ const initializeDatabase = async () => {
     
     // 메뉴 테이블 생성
     db.run(`
-      CREATE TABLE IF NOT EXISTS menu_items (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        description TEXT,
-        price REAL NOT NULL,
-        category TEXT NOT NULL,
-        image_url TEXT,
-        available INTEGER DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
+              CREATE TABLE IF NOT EXISTS menu_items (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          description TEXT,
+          price REAL NOT NULL,
+          category TEXT NOT NULL,
+          image_url TEXT,
+          available INTEGER DEFAULT 1,
+          stock INTEGER DEFAULT 20,
+          max_stock INTEGER DEFAULT 50,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
     `, (err) => {
       if (err) {
         console.error('❌ 메뉴 테이블 생성 실패:', err.message);
@@ -130,37 +132,43 @@ const seedInitialData = async () => {
       
       // 초기 메뉴 데이터
       const menuItems = [
-        {
-          name: '아메리카노 (HOT)',
-          description: '진한 에스프레소에 뜨거운 물을 넣은 클래식 커피',
-          price: 4500,
-          category: '커피',
-          image_url: '/images/menu/americano-hot.jpg'
-        },
-        {
-          name: '아메리카노 (ICE)',
-          description: '시원한 얼음과 진한 에스프레소의 만남',
-          price: 4500,
-          category: '아이스커피',
-          image_url: '/images/menu/americano-ice.jpg'
-        },
-        {
-          name: '카페라떼',
-          description: '부드러운 스팀 밀크와 에스프레소의 완벽한 조화',
-          price: 5500,
-          category: '커피',
-          image_url: '/images/menu/cafe-latte.jpg'
-        }
+                 {
+           name: '아메리카노 (HOT)',
+           description: '진한 에스프레소에 뜨거운 물을 넣은 클래식 커피',
+           price: 4500,
+           category: '커피',
+           image_url: '/images/menu/americano-hot.jpg',
+           stock: 15,
+           max_stock: 30
+         },
+         {
+           name: '아메리카노 (ICE)',
+           description: '시원한 얼음과 진한 에스프레소의 만남',
+           price: 4500,
+           category: '아이스커피',
+           image_url: '/images/menu/americano-ice.jpg',
+           stock: 12,
+           max_stock: 25
+         },
+         {
+           name: '카페라떼',
+           description: '부드러운 스팀 밀크와 에스프레소의 완벽한 조화',
+           price: 5500,
+           category: '커피',
+           image_url: '/images/menu/cafe-latte.jpg',
+           stock: 18,
+           max_stock: 35
+         }
       ];
       
-      const insertMenu = db.prepare(`
-        INSERT INTO menu_items (name, description, price, category, image_url) 
-        VALUES (?, ?, ?, ?, ?)
-      `);
+             const insertMenu = db.prepare(`
+         INSERT INTO menu_items (name, description, price, category, image_url, stock, max_stock) 
+         VALUES (?, ?, ?, ?, ?, ?, ?)
+       `);
       
       let insertCount = 0;
       menuItems.forEach((item, index) => {
-        insertMenu.run([item.name, item.description, item.price, item.category, item.image_url], (err) => {
+                 insertMenu.run([item.name, item.description, item.price, item.category, item.image_url, item.stock, item.max_stock], (err) => {
           if (err) {
             console.error(`❌ 메뉴 ${index + 1} 추가 실패:`, err);
             return reject(err);
