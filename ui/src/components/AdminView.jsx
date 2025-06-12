@@ -16,15 +16,24 @@ const AdminView = ({ orders, onUpdateOrderStatus }) => {
       const data = await response.json()
       
       if (data.success) {
+        // 디버깅: API 응답 로그
+        console.log('📋 관리자 화면 - API 응답:', data);
+        console.log('📦 메뉴 데이터:', data.data);
+        
         // 백엔드 데이터를 관리자 화면 형식으로 변환
-        const stockData = data.data.map(item => ({
-          id: item.id,
-          name: item.name,
-          stock: item.stock || 0,
-          maxStock: item.max_stock || 50,
-          minStock: 5, // 최소 재고 기준
-          soldOut: item.soldOut || false
-        }))
+        const stockData = data.data.map(item => {
+          console.log(`🔍 ${item.name}: stock=${item.stock}, max_stock=${item.max_stock}`);
+          return {
+            id: item.id,
+            name: item.name,
+            stock: item.stock || 0,
+            maxStock: item.max_stock || 50,
+            minStock: 5, // 최소 재고 기준
+            soldOut: item.soldOut || false
+          };
+        });
+        
+        console.log('📊 변환된 재고 데이터:', stockData);
         setMenuStock(stockData)
         setError(null)
       } else {
@@ -110,6 +119,29 @@ const AdminView = ({ orders, onUpdateOrderStatus }) => {
     }
   }
 
+  const restockAll = async () => {
+    try {
+      const response = await fetch(`${API_ENDPOINTS.MENU}/restock`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        alert('전체 재고가 보충되었습니다!')
+        fetchMenuStock()
+      } else {
+        alert(`재고 보충 실패: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('재고 보충 오류:', error)
+      alert('재고 보충 중 오류가 발생했습니다.')
+    }
+  }
+
   const getStockStatus = (stock, minStock) => {
     if (stock === 0) return 'out-of-stock'
     if (stock <= minStock) return 'low-stock'
@@ -158,6 +190,13 @@ const AdminView = ({ orders, onUpdateOrderStatus }) => {
               disabled={loading}
             >
               {loading ? '새로고침 중...' : '새로고침'}
+            </button>
+            <button 
+              className="restock-btn"
+              onClick={restockAll}
+              disabled={loading}
+            >
+              전체 재고 보충
             </button>
           </div>
         </div>

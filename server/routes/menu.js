@@ -42,6 +42,11 @@ router.get('/', (req, res) => {
     
     console.log(`메뉴 조회 성공: ${menuItems.length}개 항목`);
     
+    // 디버깅: 재고 정보 로그
+    menuItems.forEach(item => {
+      console.log(`📦 ${item.name}: 재고 ${item.stock}개 (최대 ${item.max_stock}개)`);
+    });
+    
     res.json({
       success: true,
       data: menuItems,
