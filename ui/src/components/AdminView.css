@@ -1,0 +1,480 @@
+.admin-view {
+  padding: 2rem;
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.admin-header {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.admin-header h2 {
+  color: #1976d2;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+  transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.stat-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1976d2;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* 재고 관리 섹션 */
+.stock-management {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stock-management h3 {
+  color: #1976d2;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.stock-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.stock-card {
+  background: #fafafa;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.stock-card.normal {
+  border-color: #4caf50;
+}
+
+.stock-card.low-stock {
+  border-color: #ff9800;
+  background: #fff8e1;
+}
+
+.stock-card.out-of-stock {
+  border-color: #f44336;
+  background: #ffebee;
+}
+
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.stock-header h4 {
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.stock-status {
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.stock-status.normal {
+  background: #4caf50;
+  color: white;
+}
+
+.stock-status.low-stock {
+  background: #ff9800;
+  color: white;
+}
+
+.stock-status.out-of-stock {
+  background: #f44336;
+  color: white;
+}
+
+.stock-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stock-current {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.stock-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1976d2;
+}
+
+.stock-unit {
+  color: #666;
+  font-size: 1rem;
+}
+
+.stock-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.stock-btn {
+  width: 35px;
+  height: 35px;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.stock-btn.decrease {
+  background: #f44336;
+  color: white;
+}
+
+.stock-btn.decrease:hover:not(:disabled) {
+  background: #d32f2f;
+  transform: scale(1.1);
+}
+
+.stock-btn.decrease:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.stock-btn.increase {
+  background: #4caf50;
+  color: white;
+}
+
+.stock-btn.increase:hover {
+  background: #388e3c;
+  transform: scale(1.1);
+}
+
+.stock-warning {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background: #fff3e0;
+  border: 1px solid #ff9800;
+  border-radius: 8px;
+  color: #e65100;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* 주문 관리 섹션 */
+.order-management {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.order-management h3 {
+  color: #1976d2;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.filter-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: white;
+  border: 2px solid #e0e0e0;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  color: #666;
+}
+
+.filter-btn:hover {
+  border-color: #2196f3;
+  color: #2196f3;
+  transform: translateY(-1px);
+}
+
+.filter-btn.active {
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+  color: white;
+  border-color: #2196f3;
+}
+
+.orders-section {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.no-orders {
+  text-align: center;
+  color: #999;
+  padding: 3rem;
+  font-size: 1.1rem;
+  font-style: italic;
+}
+
+.orders-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.order-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.order-card:hover {
+  border-color: #2196f3;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.1);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.order-id {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.order-time {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.order-status {
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.order-items {
+  margin-bottom: 1rem;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  color: #333;
+  font-weight: 500;
+}
+
+.item-price {
+  color: #1976d2;
+  font-weight: 600;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.order-total {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1976d2;
+}
+
+.order-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.status-btn {
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.status-btn.preparing {
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+  color: white;
+}
+
+.status-btn.preparing:hover {
+  background: linear-gradient(135deg, #1976d2, #1565c0);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+.status-btn.completed {
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+  color: white;
+}
+
+.status-btn.completed:hover {
+  background: linear-gradient(135deg, #388e3c, #2e7d32);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+@media (max-width: 768px) {
+  .admin-view {
+    padding: 1rem;
+  }
+  
+  .admin-header,
+  .stock-management,
+  .order-management {
+    padding: 1.5rem;
+  }
+  
+  .dashboard-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .stock-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .filter-section {
+    justify-content: center;
+  }
+  
+  .order-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .order-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* 추가 재고 관리 스타일 */
+.stock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.stock-header h3 {
+  margin: 0;
+  color: #1976d2;
+}
+
+.refresh-btn {
+  background: linear-gradient(135deg, #4caf50, #388e3c);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.refresh-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #388e3c, #2e7d32);
+  transform: translateY(-1px);
+}
+
+.refresh-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #ffcdd2;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1rem;
+  color: #666;
+} 

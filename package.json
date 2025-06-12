@@ -1,0 +1,29 @@
+{
+  "name": "coffee-shop-app",
+  "version": "1.0.0",
+  "description": "커피 주문 앱 - 프런트엔드와 백엔드 통합 관리",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server:dev\" \"npm run ui:dev\"",
+    "start": "concurrently \"npm run server:start\" \"npm run ui:start\"",
+    "server:dev": "cd server && npm run dev",
+    "server:start": "cd server && npm start",
+    "server:seed": "cd server && npm run seed",
+    "server:reset-menu": "cd server && npm run reset-menu",
+    "server:check-menu": "cd server && npm run check-menu",
+    "server:force-reset": "cd server && npm run force-reset",
+    "server:inspect-db": "cd server && npm run inspect-db",
+    "server:clean-reset": "cd server && npm run clean-reset",
+    "ui:dev": "cd ui && npm run dev",
+    "ui:start": "cd ui && npm run preview",
+    "ui:build": "cd ui && npm run build",
+    "install:all": "npm install && cd server && npm install && cd ../ui && npm install",
+    "build": "npm run ui:build"
+  },
+  "keywords": ["coffee", "order", "react", "express", "sqlite"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 

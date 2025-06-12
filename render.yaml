@@ -1,0 +1,32 @@
+services:
+  # 백엔드 API 서버
+  - type: web
+    name: coffee-shop-api
+    runtime: node
+    plan: free
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+    
+  # 프론트엔드 정적 사이트
+  - type: web
+    name: coffee-shop-frontend
+    runtime: static
+    plan: free
+    buildCommand: cd ui && npm install && npm run build
+    staticPublishPath: ui/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: coffee-shop-api
+          property: url 
